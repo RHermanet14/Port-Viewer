@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Diagnostics;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,9 +17,24 @@ namespace Port_Viewer
     /// </summary>
     public partial class MainWindow : Window
     {
+        private List<string> data = [];
+
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            data = await LoadPortDataAsync();
+        }
+
+        private async Task<List<string>> LoadPortDataAsync()
+        {
+            var lines = new List<string>();
+            return lines;
+            // run command
+            // return  string list
         }
     }
 }
