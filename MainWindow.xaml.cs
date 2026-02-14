@@ -29,12 +29,43 @@ namespace Port_Viewer
             data = await LoadPortDataAsync();
         }
 
-        private async Task<List<string>> LoadPortDataAsync()
+        private static async Task<List<string>> LoadPortDataAsync()
         {
             var lines = new List<string>();
+
+            var process = new Process
+            {
+                StartInfo = new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = $"/c netstat -ano",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    UseShellExecute = false,
+                    CreateNoWindow = true
+                }
+            };
+
+            process.Start();
+
+            while (true)
+            {
+                string? line = await process.StandardOutput.ReadLineAsync();
+
+                if (line is null)
+                    break;
+
+                lines.Add(line);
+            }
+
+            await process.WaitForExitAsync();
+
             return lines;
-            // run command
-            // return  string list
+        }
+        
+        private void ParseData()
+        {
+            // it parses the data
         }
     }
 }
