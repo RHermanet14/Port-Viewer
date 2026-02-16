@@ -7,7 +7,18 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         Loaded="Window_Loaded">
-    <Grid>
-
-    </Grid>
+    <ScrollViewer Height="400">
+        <Grid x:Name="grid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Label Content="IP + Port" HorizontalAlignment="Center"/>
+            <Label Content="PID" Grid.Column="1" HorizontalAlignment="Center"/>
+        </Grid>
+    </ScrollViewer>
 </Window>

@@ -29,7 +29,8 @@ namespace Port_Viewer
         {
             data = await LoadPortDataAsync();
             ParseData();
-            PrintData(); // Debug
+            //PrintData(); // Debug
+            PopulateGrid();
         }
 
         private void PrintData()
@@ -100,6 +101,32 @@ namespace Port_Viewer
                 result.Add(fifth);
             }
             data = result;
+        }
+    
+        private void PopulateGrid()
+        {
+            // Test without data
+            int num_data = 30;
+            int num_rows = (int)Math.Ceiling((double)num_data / 2);
+            for (int i = 0; i < num_rows; i++)
+            {
+                grid.RowDefinitions.Add(new RowDefinition());
+            }
+
+            for(int i = 0; i < num_data; i++)
+            {
+                TextBlock text = new()
+                {
+                    Text = i.ToString(),
+                    Margin = Margin = new Thickness(20),
+                    MinHeight = 25,
+                    HorizontalAlignment=HorizontalAlignment.Center
+                };
+                Grid.SetRow(text, (i / 2) + 1);
+                if (i % 2 != 0)// PID
+                    Grid.SetColumn(text, 1);
+                grid.Children.Add(text);
+            }
         }
     }
 }
