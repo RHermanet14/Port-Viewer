@@ -5,20 +5,26 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Port_Viewer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800"
+        Title="MainWindow" Height="400" Width="400"
         Loaded="Window_Loaded">
-    <ScrollViewer Height="400">
-        <Grid x:Name="grid">
+    <DockPanel>
+        <Grid DockPanel.Dock="Top" Margin="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Label Content="IP + Port" HorizontalAlignment="Center"/>
-            <Label Content="PID" Grid.Column="1" HorizontalAlignment="Center"/>
+            <Label Content="Port" HorizontalAlignment="Center" FontSize="24" FontWeight="DemiBold"/>
+            <Label Content="PID" Grid.Column="1" HorizontalAlignment="Center" FontSize="24" FontWeight="DemiBold"/>
         </Grid>
-    </ScrollViewer>
+        <Separator DockPanel.Dock="Top" Margin="10,0,10,0"/>
+        <ScrollViewer Margin="10,10,10,10" Background="LightGray">
+            <Grid x:Name="grid">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+            </Grid>
+        </ScrollViewer>
+    </DockPanel>
+    
 </Window>

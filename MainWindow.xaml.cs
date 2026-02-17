@@ -105,8 +105,7 @@ namespace Port_Viewer
     
         private void PopulateGrid()
         {
-            // Test without data
-            int num_data = 30;
+            int num_data = data.Count;
             int num_rows = (int)Math.Ceiling((double)num_data / 2);
             for (int i = 0; i < num_rows; i++)
             {
@@ -117,16 +116,25 @@ namespace Port_Viewer
             {
                 TextBlock text = new()
                 {
-                    Text = i.ToString(),
+                    Text = data[i],
                     Margin = Margin = new Thickness(20),
                     MinHeight = 25,
                     HorizontalAlignment=HorizontalAlignment.Center
                 };
-                Grid.SetRow(text, (i / 2) + 1);
+                text.MouseLeftButtonDown += Copy_Text;
+                Grid.SetRow(text, (i / 2));
                 if (i % 2 != 0)// PID
                     Grid.SetColumn(text, 1);
                 grid.Children.Add(text);
             }
+        }
+
+        private void Copy_Text(object sender, MouseButtonEventArgs e)
+        {
+            if (sender is TextBlock textblock)
+                Clipboard.SetText(textblock.Text);
+            else
+                MessageBox.Show("Error: port or pid was not successfully copied to clipboard");
         }
     }
 }
