@@ -17,7 +17,27 @@
             <Label Content="PID" Grid.Column="1" HorizontalAlignment="Center" FontSize="24" FontWeight="DemiBold"/>
         </Grid>
         <Separator DockPanel.Dock="Top" Margin="10,0,10,0"/>
-        <ScrollViewer Margin="10,10,10,10" Background="LightGray">
+        <DockPanel DockPanel.Dock="Top" Margin="10,10,10,0">
+            <Button Content="Refresh"/>
+            <Menu>
+                <MenuItem Header="Sort By">
+                    <MenuItem Header="Increasing Port"/>
+                    <MenuItem Header="Decreasing Port"/>
+                    <MenuItem Header="Increasing PID"/>
+                    <MenuItem Header="Decreasing PID"/>
+                </MenuItem>
+            </Menu>
+            <Rectangle DockPanel.Dock="Left" MinWidth="110"/>
+            <Menu DockPanel.Dock="Right">
+                <MenuItem Header="Search For">
+                    <MenuItem Header="Port"/>
+                    <MenuItem Header="PID"/>
+                </MenuItem>
+            </Menu>
+            <TextBox DockPanel.Dock="Right"/>
+            
+        </DockPanel>
+        <ScrollViewer Margin="10" Background="LightGray">
             <Grid x:Name="grid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
