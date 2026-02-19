@@ -102,6 +102,12 @@ namespace Port_Viewer
             }
             data = result;
         }
+
+        private void ClearGrid()
+        {
+            grid.Children.Clear();
+            grid.RowDefinitions.Clear();
+        }
     
         private void PopulateGrid()
         {
@@ -119,7 +125,8 @@ namespace Port_Viewer
                     Text = data[i],
                     Margin = Margin = new Thickness(20),
                     MinHeight = 25,
-                    HorizontalAlignment=HorizontalAlignment.Center
+                    HorizontalAlignment=HorizontalAlignment.Center,
+                    ToolTip = data[i],
                 };
                 text.MouseLeftButtonDown += Copy_Text;
                 Grid.SetRow(text, (i / 2));
@@ -135,6 +142,22 @@ namespace Port_Viewer
                 Clipboard.SetText(textblock.Text);
             else
                 MessageBox.Show("Error: port or pid was not successfully copied to clipboard");
+        }
+
+        private void Refresh_Button_Click(object sender, RoutedEventArgs e)
+        {
+            ClearGrid();
+            PopulateGrid();
+        }
+
+        private void Sort_By_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Search_For_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

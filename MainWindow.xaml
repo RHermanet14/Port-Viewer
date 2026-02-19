@@ -18,20 +18,20 @@
         </Grid>
         <Separator DockPanel.Dock="Top" Margin="10,0,10,0"/>
         <DockPanel DockPanel.Dock="Top" Margin="10,10,10,0">
-            <Button Content="Refresh"/>
+            <Button Content="Refresh" Click="Refresh_Button_Click"/>
             <Menu>
                 <MenuItem Header="Sort By">
-                    <MenuItem Header="Increasing Port"/>
-                    <MenuItem Header="Decreasing Port"/>
-                    <MenuItem Header="Increasing PID"/>
-                    <MenuItem Header="Decreasing PID"/>
+                    <MenuItem x:Name="IPort" Header="Increasing Port" Click="Sort_By_Click"/>
+                    <MenuItem x:Name="DPort" Header="Decreasing Port" Click="Sort_By_Click"/>
+                    <MenuItem x:Name="IPID" Header="Increasing PID" Click="Sort_By_Click"/>
+                    <MenuItem x:Name="DPID" Header="Decreasing PID" Click="Sort_By_Click"/>
                 </MenuItem>
             </Menu>
             <Rectangle DockPanel.Dock="Left" MinWidth="110"/>
             <Menu DockPanel.Dock="Right">
                 <MenuItem Header="Search For">
-                    <MenuItem Header="Port"/>
-                    <MenuItem Header="PID"/>
+                    <MenuItem Header="Port" Click="Search_For_Click"/>
+                    <MenuItem Header="PID" Click="Search_For_Click"/>
                 </MenuItem>
             </Menu>
             <TextBox DockPanel.Dock="Right"/>
