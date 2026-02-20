@@ -30,8 +30,8 @@
             <Rectangle DockPanel.Dock="Left" MinWidth="110"/>
             <Menu DockPanel.Dock="Right">
                 <MenuItem Header="Search For">
-                    <MenuItem Header="Port" Click="Search_For_Click"/>
-                    <MenuItem Header="PID" Click="Search_For_Click"/>
+                    <MenuItem x:Name="SearchPort" Header="Port" Click="Search_For_Click"/>
+                    <MenuItem x:Name="SearchPID" Header="PID" Click="Search_For_Click"/>
                 </MenuItem>
             </Menu>
             <TextBox DockPanel.Dock="Right"/>

@@ -10,6 +10,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace Port_Viewer
 {
@@ -18,8 +20,15 @@ namespace Port_Viewer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private List<string> data = [];
-
+        private enum data_type {PORT, PID};
+        private struct DataPoint
+        {
+            public string line;
+            public data_type type;
+        }
+        private List<DataPoint> data = [];
+        // private List<DataPoint> sub_data = [];
+        private List<string> lines = [];
         public MainWindow()
         {
             InitializeComponent();
@@ -27,7 +36,7 @@ namespace Port_Viewer
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            data = await LoadPortDataAsync();
+            lines = await LoadPortDataAsync();
             ParseData();
             //PrintData(); // Debug
             PopulateGrid();
@@ -35,9 +44,9 @@ namespace Port_Viewer
 
         private void PrintData()
         {
-            foreach(string hi in data)
+            foreach(DataPoint hi in data)
             {
-                Debug.WriteLine(hi);
+                Debug.WriteLine(hi.line);
             }
         }
 
@@ -73,7 +82,7 @@ namespace Port_Viewer
             List<string> result = [];
             for (int i = 4; i < data.Count; i++) // skip first group
             {
-                string line = data[i];
+                string line = lines[i];
                 if (string.IsNullOrWhiteSpace(line))
                     break;
                 string[] parts = line.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
@@ -100,7 +109,7 @@ namespace Port_Viewer
                 result.Add(second);
                 result.Add(fifth);
             }
-            data = result;
+            data = result; // broken
         }
 
         private void ClearGrid()
@@ -122,11 +131,12 @@ namespace Port_Viewer
             {
                 TextBlock text = new()
                 {
-                    Text = data[i],
+                    Text = data[i].line,
                     Margin = Margin = new Thickness(20),
                     MinHeight = 25,
                     HorizontalAlignment=HorizontalAlignment.Center,
                     ToolTip = data[i],
+                    Tag = data[i].type, // possibly fix
                 };
                 text.MouseLeftButtonDown += Copy_Text;
                 Grid.SetRow(text, (i / 2));
@@ -144,7 +154,13 @@ namespace Port_Viewer
                 MessageBox.Show("Error: port or pid was not successfully copied to clipboard");
         }
 
-        private void Refresh_Button_Click(object sender, RoutedEventArgs e)
+        private void Refresh_Button_Click(object sender, RoutedEventArgs e) // Call the function again
+        {
+            ClearGrid();
+            Window_Loaded(sender, e);
+        }
+
+        private void Refresh() // Refresh without calling function again, used by ordering and search
         {
             ClearGrid();
             PopulateGrid();
@@ -152,12 +168,43 @@ namespace Port_Viewer
 
         private void Sort_By_Click(object sender, RoutedEventArgs e)
         {
-
+            if (sender is not MenuItem item) return;
+            switch(item.Name)
+            {
+                case "IPort": // Order by
+                    var sortedFruits = data.OrderBy(s => s);
+                    Refresh();
+                    break;
+                case "DPort":
+                    Refresh();
+                    break;
+                case "IPID":
+                    Refresh();
+                    break;
+                case "DPID":
+                    Refresh();
+                    break;
+                default: // Do nothing
+                    break;
+            }
+            // use linq
+            Refresh_Button_Click(sender, e);
         }
 
         private void Search_For_Click(object sender, RoutedEventArgs e)
         {
-
+            if (sender is not MenuItem item) return;
+            switch(item.Name)
+            {
+                case "SearchPort": // Match / contains
+                    break;
+                case "SearchPID":
+                    break;
+                default: // Do nothing
+                    break;
+            }
+            // Use LINQ
+            Refresh_Button_Click(sender, e); // Add second string list, check if null before LoadPortDataAsync();
         }
     }
 }
