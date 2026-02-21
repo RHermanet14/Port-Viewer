@@ -20,14 +20,13 @@ namespace Port_Viewer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private enum Data_Type {NULL, PORT, PID};
-        private struct DataPoint(string line, Data_Type type)
+        private struct DataLine(string port, string pid)
         {
-            public string Line { get; set; } = line;
-            public Data_Type Type { get; set; } = type;
+            public string Port { get; set; } = port;
+            public string Pid { get; set; } = pid;
         }
-        private List<DataPoint> data = [];
-        // private List<DataPoint> sub_data = [];
+        private List<DataLine> data = [];
+        //private List<DataPoint> sub_data = [];
         private List<string> lines = [];
         public MainWindow()
         {
@@ -44,9 +43,9 @@ namespace Port_Viewer
 
         private void PrintData()
         {
-            foreach(DataPoint hi in data)
+            foreach(DataLine hi in data)
             {
-                Debug.WriteLine(hi.Line);
+                Debug.WriteLine($"{hi.Port}\t{hi.Pid}");
             }
         }
 
@@ -77,9 +76,9 @@ namespace Port_Viewer
             return lines;
         }
 
-        private List<DataPoint> ParseData()
+        private List<DataLine> ParseData()
         {
-            List<DataPoint> result = [];
+            List<DataLine> result = [];
             for (int i = 4; i < lines.Count; i++) // skip first group
             {
                 string line = lines[i];
@@ -106,8 +105,7 @@ namespace Port_Viewer
                 }
                 if (stop)
                     break;
-                result.Add(new(second, Data_Type.PORT));
-                result.Add(new(fifth, Data_Type.PID));
+                result.Add(new(second, fifth));
             }
             return result;
         }
@@ -121,28 +119,36 @@ namespace Port_Viewer
         private void PopulateGrid()
         {
             int num_data = data.Count;
-            int num_rows = (int)Math.Ceiling((double)num_data / 2);
-            for (int i = 0; i < num_rows; i++)
+            for (int i = 0; i < num_data; i++)
             {
                 grid.RowDefinitions.Add(new RowDefinition());
             }
 
             for(int i = 0; i < num_data; i++)
             {
-                TextBlock text = new()
+                TextBlock port_textblock = new()
                 {
-                    Text = data[i].Line,
+                    Text = data[i].Port,
                     Margin = Margin = new Thickness(20),
                     MinHeight = 25,
                     HorizontalAlignment=HorizontalAlignment.Center,
-                    ToolTip = data[i],
-                    Tag = data[i].Type,
+                    ToolTip = data[i].Port,
                 };
-                text.MouseLeftButtonDown += Copy_Text;
-                Grid.SetRow(text, (i / 2));
-                if (i % 2 != 0)// PID
-                    Grid.SetColumn(text, 1);
-                grid.Children.Add(text);
+
+                TextBlock pid_textblock = new()
+                {
+                    Text = data[i].Pid,
+                    Margin = Margin = new Thickness(20),
+                    MinHeight = 25,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    ToolTip = data[i].Pid,
+                };
+                port_textblock.MouseLeftButtonDown += Copy_Text; pid_textblock.MouseLeftButtonDown += Copy_Text;
+
+                Grid.SetRow(port_textblock, i);
+                Grid.SetRow(pid_textblock, i);
+                Grid.SetColumn(pid_textblock, 1);
+                grid.Children.Add(port_textblock); grid.Children.Add(pid_textblock);
             }
         }
 
