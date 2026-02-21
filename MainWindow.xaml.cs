@@ -20,11 +20,11 @@ namespace Port_Viewer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private enum data_type {PORT, PID};
-        private struct DataPoint
+        private enum Data_Type {NULL, PORT, PID};
+        private struct DataPoint(string line, Data_Type type)
         {
-            public string line;
-            public data_type type;
+            public string Line { get; set; } = line;
+            public Data_Type Type { get; set; } = type;
         }
         private List<DataPoint> data = [];
         // private List<DataPoint> sub_data = [];
@@ -37,7 +37,7 @@ namespace Port_Viewer
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             lines = await LoadPortDataAsync();
-            ParseData();
+            data = ParseData();
             //PrintData(); // Debug
             PopulateGrid();
         }
@@ -46,7 +46,7 @@ namespace Port_Viewer
         {
             foreach(DataPoint hi in data)
             {
-                Debug.WriteLine(hi.line);
+                Debug.WriteLine(hi.Line);
             }
         }
 
@@ -77,10 +77,10 @@ namespace Port_Viewer
             return lines;
         }
 
-        private void ParseData()
+        private List<DataPoint> ParseData()
         {
-            List<string> result = [];
-            for (int i = 4; i < data.Count; i++) // skip first group
+            List<DataPoint> result = [];
+            for (int i = 4; i < lines.Count; i++) // skip first group
             {
                 string line = lines[i];
                 if (string.IsNullOrWhiteSpace(line))
@@ -101,15 +101,15 @@ namespace Port_Viewer
                         break;
                     }
 
-                    if (j == 1) second = parts[j];
-                    if (j == 4) fifth = parts[j];
+                    if (j == 1) second = parts[j]; // Port
+                    if (j == 4) fifth = parts[j]; // PID
                 }
                 if (stop)
                     break;
-                result.Add(second);
-                result.Add(fifth);
+                result.Add(new(second, Data_Type.PORT));
+                result.Add(new(fifth, Data_Type.PID));
             }
-            data = result; // broken
+            return result;
         }
 
         private void ClearGrid()
@@ -131,12 +131,12 @@ namespace Port_Viewer
             {
                 TextBlock text = new()
                 {
-                    Text = data[i].line,
+                    Text = data[i].Line,
                     Margin = Margin = new Thickness(20),
                     MinHeight = 25,
                     HorizontalAlignment=HorizontalAlignment.Center,
                     ToolTip = data[i],
-                    Tag = data[i].type, // possibly fix
+                    Tag = data[i].Type,
                 };
                 text.MouseLeftButtonDown += Copy_Text;
                 Grid.SetRow(text, (i / 2));
