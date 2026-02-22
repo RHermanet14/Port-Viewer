@@ -34,7 +34,7 @@
                     <MenuItem x:Name="SearchPID" Header="PID" Click="Search_For_Click"/>
                 </MenuItem>
             </Menu>
-            <TextBox DockPanel.Dock="Right"/>
+            <TextBox x:Name="SearchBox" DockPanel.Dock="Right"/>
             
         </DockPanel>
         <ScrollViewer Margin="10" Background="LightGray">

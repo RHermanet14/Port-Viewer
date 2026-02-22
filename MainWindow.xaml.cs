@@ -26,7 +26,7 @@ namespace Port_Viewer
             public string Pid { get; set; } = pid;
         }
         private List<DataLine> data = [];
-        //private List<DataPoint> sub_data = [];
+        private List<DataLine> sub_data = [];
         private List<string> lines = [];
         public MainWindow()
         {
@@ -37,6 +37,7 @@ namespace Port_Viewer
         {
             lines = await LoadPortDataAsync();
             data = ParseData();
+            sub_data = data;
             //PrintData(); // Debug
             PopulateGrid();
         }
@@ -177,20 +178,24 @@ namespace Port_Viewer
             if (sender is not MenuItem item) return;
             switch(item.Name)
             {
-                case "IPort": // Order by
-                    var sortedFruits = data.OrderBy(s => s);
+                case "IPort":
+                    sub_data = sub_data.OrderBy(line => line.Port).ToList(); // order sub_data so you can sort with a search
                     Refresh();
                     break;
                 case "DPort":
+                    sub_data = sub_data.OrderByDescending(line => line.Port).ToList();
                     Refresh();
                     break;
                 case "IPID":
+                    sub_data = sub_data.OrderBy(line => line.Pid).ToList();
                     Refresh();
                     break;
                 case "DPID":
+                    sub_data = sub_data.OrderByDescending(line => line.Pid).ToList();
                     Refresh();
                     break;
-                default: // Do nothing
+                default:
+                    sub_data = data;
                     break;
             }
             // use linq
@@ -200,16 +205,24 @@ namespace Port_Viewer
         private void Search_For_Click(object sender, RoutedEventArgs e)
         {
             if (sender is not MenuItem item) return;
-            switch(item.Name)
+            if (string.IsNullOrWhiteSpace(SearchBox.Text))
             {
-                case "SearchPort": // Match / contains
-                    break;
-                case "SearchPID":
-                    break;
-                default: // Do nothing
-                    break;
-            }
-            // Use LINQ
+                sub_data = data;
+            } else
+            {
+                switch (item.Name)
+                {
+                    case "SearchPort":
+                        sub_data = data.Where(line => line.Port.Contains(SearchBox.Text)).ToList();
+                        break;
+                    case "SearchPID":
+                        sub_data = data.Where(line => line.Pid.Contains(SearchBox.Text)).ToList();
+                        break;
+                    default:
+                        sub_data = data;
+                        break;
+                }
+            }    
             Refresh_Button_Click(sender, e); // Add second string list, check if null before LoadPortDataAsync();
         }
     }
