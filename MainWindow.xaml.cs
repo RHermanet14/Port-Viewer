@@ -119,7 +119,7 @@ namespace Port_Viewer
     
         private void PopulateGrid()
         {
-            int num_data = data.Count;
+            int num_data = sub_data.Count;
             for (int i = 0; i < num_data; i++)
             {
                 grid.RowDefinitions.Add(new RowDefinition());
@@ -129,7 +129,7 @@ namespace Port_Viewer
             {
                 TextBlock port_textblock = new()
                 {
-                    Text = data[i].Port,
+                    Text = sub_data[i].Port,
                     Margin = Margin = new Thickness(20),
                     MinHeight = 25,
                     HorizontalAlignment=HorizontalAlignment.Center,
@@ -138,7 +138,7 @@ namespace Port_Viewer
 
                 TextBlock pid_textblock = new()
                 {
-                    Text = data[i].Pid,
+                    Text = sub_data[i].Pid,
                     Margin = Margin = new Thickness(20),
                     MinHeight = 25,
                     HorizontalAlignment = HorizontalAlignment.Center,
@@ -176,30 +176,15 @@ namespace Port_Viewer
         private void Sort_By_Click(object sender, RoutedEventArgs e)
         {
             if (sender is not MenuItem item) return;
-            switch(item.Name)
+            sub_data = item.Name switch
             {
-                case "IPort":
-                    sub_data = sub_data.OrderBy(line => line.Port).ToList(); // order sub_data so you can sort with a search
-                    Refresh();
-                    break;
-                case "DPort":
-                    sub_data = sub_data.OrderByDescending(line => line.Port).ToList();
-                    Refresh();
-                    break;
-                case "IPID":
-                    sub_data = sub_data.OrderBy(line => line.Pid).ToList();
-                    Refresh();
-                    break;
-                case "DPID":
-                    sub_data = sub_data.OrderByDescending(line => line.Pid).ToList();
-                    Refresh();
-                    break;
-                default:
-                    sub_data = data;
-                    break;
-            }
-            // use linq
-            Refresh_Button_Click(sender, e);
+                "IPort" => [.. sub_data.OrderBy(line => line.Port)],// order sub_data so you can sort with a search
+                "DPort" => [.. sub_data.OrderByDescending(line => line.Port)],
+                "IPID" => [.. sub_data.OrderBy(line => line.Pid)],
+                "DPID" => [.. sub_data.OrderByDescending(line => line.Pid)],
+                _ => data,
+            };
+            Refresh();
         }
 
         private void Search_For_Click(object sender, RoutedEventArgs e)
@@ -213,17 +198,17 @@ namespace Port_Viewer
                 switch (item.Name)
                 {
                     case "SearchPort":
-                        sub_data = data.Where(line => line.Port.Contains(SearchBox.Text)).ToList();
+                        sub_data = [.. data.Where(line => line.Port.Contains(SearchBox.Text))];
                         break;
                     case "SearchPID":
-                        sub_data = data.Where(line => line.Pid.Contains(SearchBox.Text)).ToList();
+                        sub_data = [.. data.Where(line => line.Pid.Contains(SearchBox.Text))];
                         break;
                     default:
                         sub_data = data;
                         break;
                 }
             }    
-            Refresh_Button_Click(sender, e); // Add second string list, check if null before LoadPortDataAsync();
+            Refresh();
         }
     }
 }
